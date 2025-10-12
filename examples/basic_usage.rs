@@ -27,9 +27,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("✅ Found {} servers:", response.total_count);
             for server in &response.servers {
                 let status = if server.is_active { "🟢" } else { "🔴" };
+                let cmd = server.command.as_deref().unwrap_or("-");
+                let url = server.base_url.as_deref().unwrap_or("-");
                 println!(
-                    "   {} {} - {} ({})",
-                    status, server.id, server.command, server.name
+                    "   {} {} [{}] cmd:{} url:{} ({})",
+                    status, server.id, server.server_type, cmd, url, server.name
                 );
             }
         }
@@ -41,10 +43,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let new_server = ServerRequest {
         id: "example-server".to_string(),
         is_active: false,
-        args: vec!["--example".to_string(), "parameter".to_string()],
-        command: "node".to_string(),
+        args: Some(vec!["--example".to_string(), "parameter".to_string()]),
+        command: Some("node".to_string()),
         server_type: "stdio".to_string(),
         name: "Example Server".to_string(),
+        env: None,
+        base_url: None,
+        headers: None,
+        long_running: None,
     };
 
     // Note: This would actually modify the database in a real scenario
