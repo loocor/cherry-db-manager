@@ -1,29 +1,58 @@
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
-/// Request structure for MCP server configuration
+/// Request structure for MCP server configuration (supports stdio | sse | streamableHttp)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerRequest {
     pub id: String,
     #[serde(rename = "isActive")]
     pub is_active: bool,
-    pub args: Vec<String>,
-    pub command: String,
     #[serde(rename = "type")]
     pub server_type: String,
     pub name: String,
+
+    // stdio fields
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<HashMap<String, String>>,
+
+    // http transport fields (Cherry uses baseUrl)
+    #[serde(rename = "baseUrl", default, skip_serializing_if = "Option::is_none")]
+    pub base_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<HashMap<String, String>>,
+    #[serde(rename = "longRunning", default, skip_serializing_if = "Option::is_none")]
+    pub long_running: Option<bool>,
 }
 
-/// Response structure for MCP server information
+/// Response structure for MCP server information (mirrors ServerRequest)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerResponse {
     pub id: String,
     #[serde(rename = "isActive")]
     pub is_active: bool,
-    pub args: Vec<String>,
-    pub command: String,
     #[serde(rename = "type")]
     pub server_type: String,
     pub name: String,
+
+    // stdio fields
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<HashMap<String, String>>,
+
+    // http transport fields (Cherry uses baseUrl)
+    #[serde(rename = "baseUrl", default, skip_serializing_if = "Option::is_none")]
+    pub base_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<HashMap<String, String>>,
+    #[serde(rename = "longRunning", default, skip_serializing_if = "Option::is_none")]
+    pub long_running: Option<bool>,
 }
 
 /// Request structure for updating MCP server list
@@ -64,10 +93,14 @@ impl From<ServerRequest> for ServerResponse {
         ServerResponse {
             id: req.id,
             is_active: req.is_active,
-            args: req.args,
-            command: req.command,
             server_type: req.server_type,
             name: req.name,
+            command: req.command,
+            args: req.args,
+            env: req.env,
+            base_url: req.base_url,
+            headers: req.headers,
+            long_running: req.long_running,
         }
     }
 }
@@ -77,10 +110,14 @@ impl From<ServerResponse> for ServerRequest {
         ServerRequest {
             id: resp.id,
             is_active: resp.is_active,
-            args: resp.args,
-            command: resp.command,
             server_type: resp.server_type,
             name: resp.name,
+            command: resp.command,
+            args: resp.args,
+            env: resp.env,
+            base_url: resp.base_url,
+            headers: resp.headers,
+            long_running: resp.long_running,
         }
     }
 }
