@@ -24,7 +24,11 @@ pub struct ServerRequest {
     pub base_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<HashMap<String, String>>,
-    #[serde(rename = "longRunning", default, skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "longRunning",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
     pub long_running: Option<bool>,
 }
 
@@ -51,7 +55,11 @@ pub struct ServerResponse {
     pub base_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<HashMap<String, String>>,
-    #[serde(rename = "longRunning", default, skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "longRunning",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
     pub long_running: Option<bool>,
 }
 
